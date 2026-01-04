@@ -6,6 +6,7 @@ from bisect import bisect
 from collections import defaultdict
 
 import gymnasium as gym
+import numpy as np
 
 BOUNDS = [
     (-4.8, 4.8),
@@ -57,8 +58,10 @@ def choose_action(q_values: list[float], epsilon: float) -> int:
         The selected action index.
     """
     if random.random() < epsilon:
+        # Exploration
         return random.randrange(len(q_values))
-    return max(range(len(q_values)), key=q_values.__getitem__)
+    # Exploitation
+    return int(np.argmax(q_values))
 
 
 def train_q_learning(
@@ -105,10 +108,11 @@ def train_q_learning(
             next_obs, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
             next_state = discretize(next_obs, bins)
-            best_next = 0.0 if done else max(q_table[next_state])
-            td_target = reward + gamma * best_next
-            td_error = td_target - q_table[state][action]
-            q_table[state][action] += alpha * td_error
+            old_q = q_table[state][action]
+            max_future_q = 0.0 if done else max(q_table[next_state])
+            q_table[state][action] = old_q + alpha * (
+                reward + gamma * max_future_q - old_q
+            )
 
             total_reward += reward
             state = next_state
@@ -148,7 +152,7 @@ def evaluate(
         total_reward = 0.0
 
         while True:
-            action = max(range(env.action_space.n), key=q_table[state].__getitem__)
+            action = int(np.argmax(q_table[state]))
             obs, reward, terminated, truncated, _ = env.step(action)
             state = discretize(obs, bins)
             total_reward += reward
