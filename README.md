@@ -23,6 +23,7 @@ pip install -r requirements.txt
 ## Repository Layout
 
 - `gymnasium/`: RL foundations (CartPole examples).
+- `chess/`: Toy chess Q-learning (KQ vs K).
 - `requirements.txt`: Python dependencies.
 - `README.md`: learning path and run instructions.
 
@@ -49,6 +50,16 @@ python gymnasium/cartpole_q_learning.py
 ```
 
 Evaluation renders by default.
+
+### Chess: KQ vs K Q-Learning
+
+Trains a Q-learning agent on a toy chess endgame (King + Queen vs King).
+
+Code: [chess/chess_q_learning.py](chess/chess_q_learning.py)
+
+```bash
+python chess/chess_q_learning.py
+```
 
 ## Learning Path (Planned)
 
