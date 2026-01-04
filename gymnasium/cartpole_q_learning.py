@@ -1,6 +1,5 @@
 """Q-learning for CartPole with discretized observations."""
 
-import os
 import random
 from bisect import bisect
 from collections import defaultdict
@@ -164,15 +163,15 @@ def evaluate(
 
 
 def main() -> None:
-    """Run training and evaluation with environment-driven hyperparameters."""
-    train_episodes = int(os.getenv("TRAIN_EPISODES", "2000"))
-    eval_episodes = int(os.getenv("EVAL_EPISODES", "5"))
-    alpha = float(os.getenv("ALPHA", "0.1"))
-    gamma = float(os.getenv("GAMMA", "0.99"))
-    epsilon_start = float(os.getenv("EPSILON_START", "1.0"))
-    epsilon_end = float(os.getenv("EPSILON_END", "0.05"))
-    epsilon_decay = float(os.getenv("EPSILON_DECAY", "0.995"))
-    seed = int(os.getenv("SEED", "0"))
+    """Run training and evaluation with fixed hyperparameters."""
+    train_episodes = 2000
+    eval_episodes = 5
+    alpha = 0.1
+    gamma = 0.99
+    epsilon_start = 1.0
+    epsilon_end = 0.05
+    epsilon_decay = 0.995
+    seed = 0
 
     env = gym.make("CartPole-v1")
     q_table, _ = train_q_learning(
