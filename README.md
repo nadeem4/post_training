@@ -65,10 +65,10 @@ Topics:
 Diagram:
 ```mermaid
 flowchart LR
-  Env[Environment] -->|State s_t| Agent
-  Agent -->|Action a_t| Env
-  Env -->|Reward r_{t+1}| Agent
-  Env -->|State s_{t+1}| Agent
+  Env["Environment"] -->|"State s(t)"| Agent["Agent"]
+  Agent -->|"Action a(t)"| Env
+  Env -->|"Reward r(t+1)"| Agent
+  Env -->|"State s(t+1)"| Agent
 ```
 
 ### 2) Supervised Fine-tuning (SFT) / Instruction Tuning
@@ -82,9 +82,9 @@ Topics:
 Diagram:
 ```mermaid
 flowchart LR
-  Pretrained[Pretrained Model] --> Train[SFT Training]
-  Data[SFT Data (Instruction + Response)] --> Train
-  Train --> Instruction[Instruction-Following Model]
+  Pretrained["Pretrained Model"] --> Train["SFT Training"]
+  Data["SFT Data (Instruction + Response)"] --> Train
+  Train --> Instruction["Instruction-Following Model"]
 ```
 
 ### 3) Preference Optimization (No-RL Alignment)
