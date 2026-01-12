@@ -51,6 +51,18 @@ python gymnasium/cartpole_q_learning.py
 
 Evaluation renders by default.
 
+### Gymnasium: CartPole DQN
+
+Trains a deep Q-network with replay and a target network.
+
+Code: [gymnasium/cartpole_dqn.py](gymnasium/cartpole_dqn.py)
+
+```bash
+python gymnasium/cartpole_dqn.py
+```
+
+Evaluation renders by default.
+
 ### Chess: KQ vs K Q-Learning
 
 Trains a Q-learning agent on a toy chess endgame (King + Queen vs King).
