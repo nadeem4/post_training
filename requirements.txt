@@ -1,4 +1,5 @@
 gymnasium[classic-control]
 numpy
 python-chess
+pytest
 torch

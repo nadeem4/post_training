@@ -20,10 +20,18 @@ python -m pip install -U pip
 pip install -r requirements.txt
 ```
 
+## Tests
+
+```bash
+python -m pytest tests/ -v
+```
+
 ## Repository Layout
 
 - `gymnasium/`: RL foundations (CartPole examples).
 - `chess/`: Toy chess Q-learning (KQ vs K).
+- `tests/`: unit and smoke tests (pytest).
+- `blog/`: blog post drafts for the learning series.
 - `requirements.txt`: Python dependencies.
 - `README.md`: learning path and run instructions.
 
@@ -59,6 +67,31 @@ Code: [gymnasium/cartpole_dqn.py](gymnasium/cartpole_dqn.py)
 
 ```bash
 python gymnasium/cartpole_dqn.py
+```
+
+Evaluation renders by default.
+
+### Gymnasium: CartPole PPO
+
+Trains an actor-critic with the PPO clipped objective and GAE.
+
+Code: [gymnasium/cartpole_ppo.py](gymnasium/cartpole_ppo.py)
+
+```bash
+python gymnasium/cartpole_ppo.py
+```
+
+Evaluation renders by default.
+
+### Gymnasium: CartPole GRPO
+
+Trains a critic-free policy using group-normalized episode returns as
+advantages, the same mechanism GRPO uses for LLM post-training.
+
+Code: [gymnasium/cartpole_grpo.py](gymnasium/cartpole_grpo.py)
+
+```bash
+python gymnasium/cartpole_grpo.py
 ```
 
 Evaluation renders by default.
