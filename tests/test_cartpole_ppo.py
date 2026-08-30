@@ -1,8 +1,9 @@
 """Unit tests for pure functions in cartpole_ppo."""
+import gymnasium as gym
 import numpy as np
 import torch
 
-from cartpole_ppo import compute_gae, ppo_clipped_loss
+from cartpole_ppo import compute_gae, ppo_clipped_loss, train_ppo
 
 
 def test_gae_no_discount_sums_future_rewards() -> None:
@@ -64,3 +65,25 @@ def test_clipped_loss_pessimistic_on_negative_advantage() -> None:
     adv = torch.tensor([-1.0], dtype=torch.float32)
     loss = ppo_clipped_loss(new_logp, old_logp, adv, clip_coef=0.2)
     assert torch.isclose(loss, torch.tensor(0.8), atol=1e-6)
+
+
+def test_train_ppo_smoke_runs_and_returns_episodes() -> None:
+    env = gym.make("CartPole-v1")
+    model, episode_returns, _ = train_ppo(
+        env,
+        total_timesteps=2048,
+        rollout_steps=256,
+        update_epochs=2,
+        minibatch_size=64,
+        gamma=0.99,
+        gae_lambda=0.95,
+        clip_coef=0.2,
+        vf_coef=0.5,
+        ent_coef=0.01,
+        max_grad_norm=0.5,
+        lr=3e-4,
+        seed=0,
+    )
+    env.close()
+    assert len(episode_returns) > 0
+    assert model is not None
