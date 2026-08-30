@@ -1,7 +1,8 @@
 """Unit tests for pure functions in cartpole_ppo."""
 import numpy as np
+import torch
 
-from cartpole_ppo import compute_gae
+from cartpole_ppo import compute_gae, ppo_clipped_loss
 
 
 def test_gae_no_discount_sums_future_rewards() -> None:
@@ -35,11 +36,6 @@ def test_gae_returns_equal_advantages_plus_values() -> None:
         rewards, dones, values, next_value=0.4, gamma=0.99, gae_lambda=0.95
     )
     np.testing.assert_allclose(returns, advantages + values, rtol=1e-6)
-
-
-import torch
-
-from cartpole_ppo import ppo_clipped_loss
 
 
 def test_clipped_loss_caps_large_ratio_on_positive_advantage() -> None:
