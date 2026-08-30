@@ -30,6 +30,8 @@ python -m pytest tests/ -v
 
 - `gymnasium/`: RL foundations (CartPole examples).
 - `chess/`: Toy chess Q-learning (KQ vs K).
+- `tests/`: unit and smoke tests (pytest).
+- `blog/`: blog post drafts for the learning series.
 - `requirements.txt`: Python dependencies.
 - `README.md`: learning path and run instructions.
 

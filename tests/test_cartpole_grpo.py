@@ -1,4 +1,4 @@
-"""Unit tests for pure functions in cartpole_grpo."""
+"""Unit tests for pure functions in cartpole_grpo and a training smoke test."""
 import gymnasium as gym
 import numpy as np
 
@@ -25,7 +25,7 @@ def test_group_advantages_best_episode_is_positive() -> None:
     assert adv[0] < 0 < adv[1]
 
 
-def test_train_grpo_smoke_improves_or_runs() -> None:
+def test_train_grpo_smoke_runs() -> None:
     env = gym.make("CartPole-v1")
     policy, mean_returns, _ = train_grpo(
         env,

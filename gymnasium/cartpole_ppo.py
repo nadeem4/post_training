@@ -217,7 +217,6 @@ def train_ppo(
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     obs, _ = env.reset(seed=seed)
-    env.action_space.seed(seed)
     episode_returns: list[float] = []
     episode_return = 0.0
     timesteps = 0
@@ -239,6 +238,11 @@ def train_ppo(
             values_buf[step] = value
 
             next_obs, reward, terminated, truncated, _ = env.step(action)
+            # Simplification: truncation (time limit) is treated as termination,
+            # so no bootstrap from V(s_next) on truncated episodes -- biases
+            # value targets low near the 500-step limit. Kept for simplicity;
+            # revisit for LLM PPO where EOS (true termination) vs max-length
+            # (truncation) genuinely differ.
             done = terminated or truncated
             rewards_buf[step] = reward
             dones_buf[step] = float(done)
@@ -250,7 +254,6 @@ def train_ppo(
                 episode_returns.append(episode_return)
                 episode_return = 0.0
                 obs, _ = env.reset(seed=seed + timesteps)
-                env.action_space.seed(seed + timesteps)
 
             if timesteps >= total_timesteps:
                 break

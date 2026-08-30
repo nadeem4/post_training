@@ -1,4 +1,4 @@
-"""Unit tests for pure functions in cartpole_ppo."""
+"""Unit tests for pure functions in cartpole_ppo and a training smoke test."""
 import gymnasium as gym
 import numpy as np
 import torch
