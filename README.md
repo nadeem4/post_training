@@ -86,7 +86,7 @@ Evaluation renders by default.
 ### Gymnasium: CartPole GRPO
 
 Trains a critic-free policy using group-normalized episode returns as
-advantages — the same mechanism GRPO uses for LLM post-training.
+advantages, the same mechanism GRPO uses for LLM post-training.
 
 Code: [gymnasium/cartpole_grpo.py](gymnasium/cartpole_grpo.py)
 
