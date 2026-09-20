@@ -10,6 +10,7 @@ reproducible.
 - Post-training methods that start from a pretrained model.
 - Minimal, readable implementations over full-scale training stacks.
 - RL fundamentals in Gymnasium to build intuition for later LLM alignment.
+- Two step-by-step blog series: build a tiny LLM, then post-train one (see Learning Path).
 
 ## Quickstart
 
@@ -105,144 +106,81 @@ Code: [chess/chess_q_learning.py](chess/chess_q_learning.py)
 ```bash
 python chess/chess_q_learning.py
 ```
+## Learning Path
 
-## Learning Path (Planned)
+Two build-from-scratch blog series, taken in order. They build up slowly: no
+post uses a concept that an earlier post has not taught, and every method is
+implemented from scratch in PyTorch first, then with a library.
 
-Each step builds on the previous one; diagrams show simplified dataflow.
-
-### 1) Reinforcement Learning Foundations
-
-Topics:
-- Value-based RL (Q-learning, intuition and DQN basics)
-- Exploration vs exploitation
-- Why policy optimization is needed
-- Where classical RL begins to fail for LLMs
-
-Diagram:
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 flowchart LR
-  Env["Environment"] -->|"State s(t)"| Agent["Agent"]
-  Agent -->|"Action a(t)"| Env
-  Env -->|"Reward r(t+1)"| Agent
-  Env -->|"State s(t+1)"| Agent
+  A["Build a Tiny LLM from Scratch<br/>10 posts"] --> B["LLM Post-Training from Scratch<br/>22 posts"]
+  A -.-> C["Architectures in Code<br/>(later)"]
 ```
 
-### 2) Supervised Fine-tuning (SFT) / Instruction Tuning
+The concepts behind the architecture posts are covered separately in the
+LLM Model Architectures Deep Dive series; the posts here build what that
+series explains.
 
-Topics:
-- Dataset formatting (prompt/response pairs)
-- Loss functions (cross-entropy)
-- Establishing evaluation baselines
-- Makes pretrained models follow instructions
+### Series 1: Build a Tiny LLM from Scratch
 
-Diagram:
-```mermaid
-flowchart LR
-  Pretrained["Pretrained Model"] --> Train["SFT Training"]
-  Data["SFT Data (Instruction + Response)"] --> Train
-  Train --> Instruction["Instruction-Following Model"]
-```
+The shared foundation. Ends with a working tiny base model.
 
-### 3) Preference Optimization (No-RL Alignment)
+1. Tensors and Matrix Multiplication: The Linear Algebra a Transformer Actually Uses
+2. Gradients by Hand, Then by Autograd
+3. Probability for Language Models: Softmax, Log-Probs, and Sampling
+4. Cross-Entropy, KL Divergence, and Entropy from Scratch
+5. Training Loops: AdamW, Learning Rate Schedules, and Reading Loss Curves
+6. Tokenizers, Special Tokens, and Chat Templates
+7. Embeddings, Attention, and the Causal Mask
+8. The Transformer Block: Residuals, LayerNorm, MLP, and the Next-Token Loss
+9. Pre-Training in Miniature: Training a Tiny Base Model
+10. Generating Text: Decoding, the KV Cache, and Stopping on EOS vs Max Length
 
-Includes:
-- DPO
-- IPO
-- KTO
-- ORPO
+### Series 2: LLM Post-Training from Scratch
 
-Focus:
-- Align models directly using preference pairs
-- Often cheaper and more stable than PPO
+One running project ties this series together: a Wordle-playing agent that
+starts as the raw Qwen2.5-0.5B base model. Each post-training method is
+applied to the same agent, and every post reports the same scoreboard (win
+rate, average guesses, illegal-move rate) on a fixed set of target words.
 
-Diagram:
-```mermaid
-flowchart LR
-  Prompt[User Prompt] --> Base[Base Model]
-  Base --> Responses[Candidate Responses]
-  Responses --> Prefs[Preference Labels]
-  Prefs --> Opt[Preference Optimization]
-  Base --> Opt
-  Opt --> Aligned[Aligned Model]
-```
+Opener
 
-### 4) Reward Modeling + RLHF (PPO / GRPO Variants)
+1. Base Model vs Chat Model: Loading Qwen and Measuring What Post-Training Changes
 
-Coverage:
-- Reward model training from preference data
-- PPO-based RLHF
-- GRPO-style policy optimization (often reducing explicit reward models)
-- Why RL can still help (reasoning, safety shaping, controllability)
+RL basics
 
-Diagram:
-```mermaid
-flowchart LR
-  SFT[Supervised Fine-Tuning] --> PPO[PPO RLHF]
-  Pref[Preference Data] --> RM[Reward Model Training]
-  RM --> PPO
-  PPO --> Aligned[Final Aligned Model]
-  SFT --> GRPO[GRPO Optimization]
-  Pref --> GRPO
-  GRPO --> Aligned
-```
+2. RL in One Loop: States, Actions, Rewards, Q-Learning, and DQN
+3. Monte Carlo Estimates and the Log-Derivative Trick: Why RL Gradients Are Noisy
+4. REINFORCE from Scratch, and the Baseline That Tames Variance
+5. Actor-Critic: Value Functions, Advantages, GAE, and Importance Sampling
+6. Before You Touch an LLM: PPO and GRPO on CartPole
+7. From CartPole to Tokens: Text Generation as an RL Problem
 
-### 5) RLAIF (AI-Generated Preferences)
+Supervised fine-tuning
 
-- Replaces human labels with LLM judgement
-- Enables preference optimization at scale
-- Reduces dependence on human annotators
+8. SFT from Scratch: Instruction Data and Loss Masking on Your Tiny Model
+9. LoRA from Scratch, Then with PEFT: Fitting Qwen-0.5B on a Free GPU
+10. Evaluating a Fine-Tune: Held-Out Loss, Win Rates, and Regressions
 
-Diagram:
-```mermaid
-flowchart LR
-  Prompt[User Prompt] --> Policy[Policy Model]
-  Policy --> Responses[Candidate Responses]
-  Responses --> Judge[Judge Model]
-  Judge --> Prefs[AI Preference Labels]
-  Prefs --> Update[Preference Optimization]
-  Policy --> Update
-  Update --> Updated[Updated Policy Model]
-```
+Preferences
 
-### 6) Constitutional and Safety Tuning
+11. Reward Models: Bradley-Terry Loss on Preference Pairs
+12. RLHF with PPO: The KL Penalty and the Reference Model
+13. Reward Hacking: Watching a Policy Game Its Reward Model
+14. DPO from Scratch: Deriving It from the RLHF Objective
+15. The DPO Family: IPO, KTO, ORPO, and SimPO on One Dataset
 
-- Constitutional AI foundations
-- Self-critique loops guided by a ruleset
-- Safety layered across the pipeline
+Verifiable rewards and reasoning
 
-Diagram:
-```mermaid
-flowchart LR
-  Output[Model Output] --> Critique[Self-Critique]
-  Constitution[Constitution / Rules] --> Critique
-  Critique --> Revise[Revision]
-  Revise --> Safer[Safer Output]
-```
+16. RLVR: Verifiers, Best-of-N, and Rejection Sampling on Math Problems
+17. GRPO for LLMs from Scratch
+18. Building an RL Environment: A Sandboxed Verifier Harness
+19. Scaling RL for Reasoning: Response Length, Entropy Collapse, and GRPO Fixes
 
-### 7) Evaluation and Comparison Harnesses
+Wrap-up
 
-- Standardized evaluation harnesses
-- Benchmark frameworks
-- Reasoning, helpfulness, and safety scoring
-
-Diagram:
-```mermaid
-flowchart LR
-  Model --> Bench[Benchmark Suite]
-  Bench --> Metrics[Metrics + Regression Tracking]
-```
-
-### 8) Distillation and Post-training Compression
-
-- Alignment-preserving distillation
-- Smaller, deployable aligned models
-- Practical deployment-focused tradeoffs
-
-Diagram:
-```mermaid
-flowchart LR
-  Teacher[Large Aligned Model] --> Data[Distillation Data]
-  Student[Smaller Model] --> Distill[Distillation Training]
-  Data --> Distill
-  Distill --> Small[Smaller Aligned Model]
-```
+20. RLAIF and Constitutional AI: An LLM Judge as the Labeler
+21. Distillation: Teaching a Small Model from a Post-Trained One
+22. Capstone: SFT, DPO, and GRPO on One Small Model with One Eval Harness
